@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stock")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
+
 public class StockController {
     @Autowired
     private StockService stockService;

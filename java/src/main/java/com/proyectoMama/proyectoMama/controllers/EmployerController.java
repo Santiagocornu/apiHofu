@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/employers")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
+
 public class EmployerController {
     @Autowired
     private EmployerService employerService;

@@ -12,7 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/envoiceProducts")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
+
 public class EnvoiceProductController {
 
     @Autowired
