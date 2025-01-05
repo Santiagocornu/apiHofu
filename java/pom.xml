@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,14 +6,14 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.0</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
+
 	<groupId>com.proyectoMama</groupId>
 	<artifactId>proyectoMama</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proyectoMama</name>
 	<description>Demo project for Spring Boot</description>
-	<url/>
 
 	<properties>
 		<java.version>17</java.version>
@@ -50,22 +49,24 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.24</version> <!-- Ensure you are using the latest version -->
+			<version>1.18.30</version><!-- Actualiza a la última versión -->
 			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
 
 	<build>
-		<!-- Change packaging to WAR -->
+		<!-- Cambia el nombre final al nombre del proyecto -->
 		<finalName>${project.artifactId}</finalName>
+
 		<plugins>
-			<!-- Spring Boot Maven Plugin for WAR packaging -->
+
+			<!-- Spring Boot Maven Plugin para empaquetar como WAR -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Exclude Lombok from the WAR -->
+					<!-- Excluir Lombok del WAR -->
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -75,38 +76,36 @@
 				</configuration>
 			</plugin>
 
-			<!-- Maven Compiler Plugin -->
+			<!-- Plugin de compilación de Maven -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version> <!-- Use a stable version -->
+				<version>3.10.1</version><!-- Usa una versión estable -->
 				<configuration>
-					<source>${java.version}</source><!-- Set source version to 17 -->
-					<target>${java.version}</target><!-- Set target version to 17 -->
-					<!-- Optional: Enable annotation processing -->
+					<source>${java.version}</source><!-- Establece la versión fuente a 17 -->
+					<target>${java.version}</target><!-- Establece la versión objetivo a 17 -->
+					<!-- Opcional: Habilitar procesamiento de anotaciones -->
 					<compilerArgs>
-						<arg>-parameters</arg><!-- Retain parameter names for reflection -->
+						<arg>-parameters</arg><!-- Retener nombres de parámetros para reflexión -->
 					</compilerArgs>
 				</configuration>
 			</plugin>
 
-
-			<!-- Maven WAR Plugin -->
+			<!-- Plugin WAR de Maven -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId><!-- Ensure this is included for WAR packaging -->
-				<!-- Additional configuration can be added here if needed -->
+				<artifactId>maven-war-plugin</artifactId><!-- Asegúrate de que esto esté incluido para empaquetar como WAR -->
+				<!-- Configuración adicional puede ser añadida aquí si es necesario -->
 			</plugin>
 
 		</plugins>
 
 	</build>
 
-	<!-- Configuration for web application -->
+	<!-- Configuración para aplicación web -->
 	<packaging>war</packaging>
 
 </project>
-
 
 
 
