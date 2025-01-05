@@ -1,5 +1,8 @@
 package com.proyectoMama.proyectoMama.entities.Person;
 
+import lombok.Data;
+
+@Data
 public class EmployerDTO {
 
     private Long id_person;

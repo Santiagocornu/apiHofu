@@ -17,7 +17,8 @@
 	<url/>
 
 	<properties>
-		<java.version>23</java.version>
+		<java.version>17</java.version>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
 	</properties>
 
 	<dependencies>
@@ -45,25 +46,26 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Solo una entrada para Lombok -->
+		<!-- Lombok dependency -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.24</version> <!-- Ensure you are using the latest version -->
 			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
 
 	<build>
-		<!-- Cambiar el empaquetado a WAR -->
+		<!-- Change packaging to WAR -->
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
-			<!-- Plugin de Spring Boot para empaquetar como WAR -->
+			<!-- Spring Boot Maven Plugin for WAR packaging -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Excluir Lombok del WAR -->
+					<!-- Exclude Lombok from the WAR -->
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -73,21 +75,38 @@
 				</configuration>
 			</plugin>
 
+			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.3</version> <!-- Cambiar a una versión disponible -->
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version> <!-- Use a stable version -->
+				<configuration>
+					<source>${java.version}</source><!-- Set source version to 17 -->
+					<target>${java.version}</target><!-- Set target version to 17 -->
+					<!-- Optional: Enable annotation processing -->
+					<compilerArgs>
+						<arg>-parameters</arg><!-- Retain parameter names for reflection -->
+					</compilerArgs>
+				</configuration>
 			</plugin>
 
+			<!-- Maven WAR Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId><!-- Ensure this is included for WAR packaging -->
+				<!-- Additional configuration can be added here if needed -->
+			</plugin>
 
 		</plugins>
 
 	</build>
 
-	<!-- Configuración de la aplicación web -->
+	<!-- Configuration for web application -->
 	<packaging>war</packaging>
 
 </project>
+
+
 
 
 
