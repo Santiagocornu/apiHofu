@@ -13,19 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class EnvoiceService {
 
@@ -40,7 +27,6 @@ public class EnvoiceService {
 
     @Autowired
     private EmployerRepository employerRepository;
-
     public List<EnvoiceDTO> getAllEnvoices() {
         return envoiceRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -63,7 +49,6 @@ public class EnvoiceService {
             envoice.setNombre_envoice(envoiceDTO.getNombre_envoice());
             envoice.setMedioPago_envoice(envoiceDTO.getMedioPago_envoice());
             envoice.setTotal_envoice(envoiceDTO.getTotal_envoice());
-            envoice.setDescripcion_envoice(envoiceDTO.getDescripcion_envoice());
             envoice.setClient(envoiceDTO.getClient_id() != null ? clientRepository.findById(envoiceDTO.getClient_id()).orElse(null) : null);
             envoice.setEmployer(envoiceDTO.getEmployer_id() != null ? employerRepository.findById(envoiceDTO.getEmployer_id()).orElse(null) : null);
             return convertToDTO(envoiceRepository.save(envoice));
@@ -120,7 +105,6 @@ public class EnvoiceService {
         dto.setNombre_envoice(envoice.getNombre_envoice());
         dto.setMedioPago_envoice(envoice.getMedioPago_envoice());
         dto.setTotal_envoice(envoice.getTotal_envoice());
-        dto.setDescripcion_envoice(envoice.getDescripcion_envoice());
         dto.setClient_id(envoice.getClient() != null ? envoice.getClient().getId_person() : null);
         dto.setEmployer_id(envoice.getEmployer() != null ? envoice.getEmployer().getId_person() : null);
         return dto;
@@ -132,13 +116,12 @@ public class EnvoiceService {
         envoice.setNombre_envoice(dto.getNombre_envoice());
         envoice.setMedioPago_envoice(dto.getMedioPago_envoice());
         envoice.setTotal_envoice(dto.getTotal_envoice());
-        envoice.setDescripcion_envoice(dto.getDescripcion_envoice());
         envoice.setClient(dto.getClient_id() != null ? clientRepository.findById(dto.getClient_id()).orElse(null) : null);
         envoice.setEmployer(dto.getEmployer_id() != null ? employerRepository.findById(dto.getEmployer_id()).orElse(null) : null);
         return envoice;
     }
-}
 
+}
 
 
 
