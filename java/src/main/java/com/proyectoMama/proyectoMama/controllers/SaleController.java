@@ -1,14 +1,15 @@
 package com.proyectoMama.proyectoMama.controllers;
 
 
+import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.Envoice;
 import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.Sale;
 import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.SaleDTO;
+import com.proyectoMama.proyectoMama.repositories.EnvoiceRepository;
 import com.proyectoMama.proyectoMama.services.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,9 @@ public class SaleController {
 
     @Autowired
     private SaleService saleService;
+
+    @Autowired
+    private EnvoiceRepository envoiceRepository;
 
     @GetMapping
     public ResponseEntity<List<SaleDTO>> getAllSales() {
@@ -66,7 +70,9 @@ public class SaleController {
         saleDTO.setId_sale(sale.getId_sale());
         saleDTO.setMonto_sale(sale.getMonto_sale());
         saleDTO.setFecha_sale(sale.getFecha_sale());
-        saleDTO.setEnvoice_id(sale.getEnvoice().getId_envoice());
+        if (sale.getEnvoice() != null) {
+            saleDTO.setEnvoice_id(sale.getEnvoice().getId_envoice());
+        }
         return saleDTO;
     }
 
@@ -74,9 +80,15 @@ public class SaleController {
         Sale sale = new Sale();
         sale.setMonto_sale(saleDTO.getMonto_sale());
         sale.setFecha_sale(saleDTO.getFecha_sale());
+        if (saleDTO.getEnvoice_id() != null) {
+            Envoice envoice = envoiceRepository.findById(saleDTO.getEnvoice_id())
+                    .orElseThrow(() -> new RuntimeException("Envoice not found for this id :: " + saleDTO.getEnvoice_id()));
+            sale.setEnvoice(envoice);
+        }
         return sale;
     }
 }
+
 
 
 
