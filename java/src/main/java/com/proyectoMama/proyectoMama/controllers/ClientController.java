@@ -14,8 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/clients")
-@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
-
+@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app", "https://front-hofu-e89pbj60m-santiagocornus-projects.vercel.app"})
 public class ClientController {
 
     @Autowired
@@ -33,15 +32,16 @@ public class ClientController {
     }
 
     @PostMapping
-    public Client createClient(@RequestBody Client client) {
-        return clientService.save(client);
+    public ResponseEntity<Client> createClient(@RequestBody Client client) {
+        Client createdClient = clientService.save(client);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client clientDetails) {
-        Optional<Client> client = clientService.findById(id);
-        if (client.isPresent()) {
-            Client updatedClient = client.get();
+        Optional<Client> existingClient = clientService.findById(id);
+        if (existingClient.isPresent()) {
+            Client updatedClient = existingClient.get();
             updatedClient.setNombre_person(clientDetails.getNombre_person());
             updatedClient.setApellido_person(clientDetails.getApellido_person());
             updatedClient.setTelefono_person(clientDetails.getTelefono_person());
@@ -61,11 +61,11 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Error al eliminar el cliente: este cliente tiene dependencias en otras tablas.");
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build(); // Cliente no encontrado
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al eliminar el cliente: " + e.getMessage());
         }
     }
-
 }
+

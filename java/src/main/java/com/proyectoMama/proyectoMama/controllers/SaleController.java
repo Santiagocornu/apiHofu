@@ -8,54 +8,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/api/sales")
-@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
-
+@RequestMapping("/api/v1")
 public class SaleController {
 
     @Autowired
     private SaleService saleService;
 
-    @GetMapping
+    @GetMapping("/sales")
     public List<Sale> getAllSales() {
         return saleService.getAllSales();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Sale> getSaleById(@PathVariable Long id) {
-        Sale sale = saleService.getSaleById(id);
-        if (sale != null) {
-            return ResponseEntity.ok(sale);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/sales/{id}")
+    public ResponseEntity<Sale> getSaleById(@PathVariable(value = "id") Long saleId) {
+        Sale sale = saleService.getSaleById(saleId).orElseThrow(() -> new RuntimeException("Sale not found for this id :: " + saleId));
+        return ResponseEntity.ok().body(sale);
     }
 
-    @PostMapping
+    @PostMapping("/sales")
     public Sale createSale(@RequestBody Sale sale) {
         return saleService.createSale(sale);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Sale> updateSale(@PathVariable Long id, @RequestBody Sale saleDetails) {
-        Sale updatedSale = saleService.updateSale(id, saleDetails);
-        if (updatedSale != null) {
-            return ResponseEntity.ok(updatedSale);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/sales/{id}")
+    public ResponseEntity<Sale> updateSale(@PathVariable(value = "id") Long saleId, @RequestBody Sale saleDetails) {
+        Sale updatedSale = saleService.updateSale(saleId, saleDetails);
+        return ResponseEntity.ok(updatedSale);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSale(@PathVariable Long id) {
-        if (saleService.deleteSale(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/sales/{id}")
+    public ResponseEntity<Void> deleteSale(@PathVariable(value = "id") Long saleId) {
+        saleService.deleteSale(saleId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/sales/{saleId}/associateEnvoice")
+    public ResponseEntity<Sale> associateEnvoice(@PathVariable(value = "saleId") Long saleId, @RequestParam Long envoiceId) {
+        Sale updatedSale = saleService.associateEnvoice(saleId, envoiceId);
+        return ResponseEntity.ok(updatedSale);
     }
 }
+
+
+
 
 

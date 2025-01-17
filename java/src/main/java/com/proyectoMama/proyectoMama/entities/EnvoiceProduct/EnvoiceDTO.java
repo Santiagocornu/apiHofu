@@ -12,6 +12,8 @@ public class EnvoiceDTO {
     @Getter @Setter private String medioPago_envoice;
     @Getter @Setter private Double total_envoice;
     @Getter @Setter private Long client_id;
+    @Getter @Setter private Double descripcion_envoice;
+
     @Getter @Setter Long employer_id;
     @Getter @Setter List<EnvoiceProductDTO> products;
 }

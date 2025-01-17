@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/envoices")
 @CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
-
 public class EnvoiceController {
 
     @Autowired
@@ -93,7 +92,6 @@ public class EnvoiceController {
         }
     }
 
-
     @PostMapping("/createWithProducts")
     public ResponseEntity<EnvoiceDTO> createEnvoiceWithProducts(@RequestBody EnvoiceDTO envoiceDTO) {
         EnvoiceDTO createdEnvoice = envoiceService.createEnvoice(envoiceDTO);
@@ -108,4 +106,5 @@ public class EnvoiceController {
         }
     }
 }
+
 
