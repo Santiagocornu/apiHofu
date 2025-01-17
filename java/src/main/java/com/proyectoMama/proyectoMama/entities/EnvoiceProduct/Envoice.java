@@ -19,7 +19,7 @@ public class Envoice {
     @Getter @Setter private String nombre_envoice;
     @Getter @Setter private String medioPago_envoice;
     @Getter @Setter private Double total_envoice;
-    @Getter @Setter private Double descripcion_envoice;
+    @Getter @Setter private String descripcion_envoice;
 
     @OneToMany(mappedBy = "envoice", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore // Ignorar esta relación para evitar ciclos

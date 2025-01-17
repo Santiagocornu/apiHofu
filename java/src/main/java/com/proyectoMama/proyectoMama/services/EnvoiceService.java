@@ -154,8 +154,7 @@ public class EnvoiceService {
         dto.setNombre_envoice(envoice.getNombre_envoice());
         dto.setMedioPago_envoice(envoice.getMedioPago_envoice());
         dto.setTotal_envoice(envoice.getTotal_envoice());
-        dto.setClient_id(envoice.getClient() != null ? envoice.getClient().getId_person() : null);
-        dto.setEmployer_id(envoice.getEmployer() != null ? envoice.getEmployer().getId_person() : null);
+        dto.setDescripcion_envoice(envoice.getDescripcion_envoice()); // Asegúrate de mapear correctamente dto.setClient_id(envoice.getClient() != null ? envoice.getClient().getId_person() : null); dto.setEmployer_id(envoice.getEmployer() != null ? envoice.getEmployer().getId_person() : null); return dto; }
         return dto;
     }
 
@@ -165,8 +164,7 @@ public class EnvoiceService {
         envoice.setNombre_envoice(dto.getNombre_envoice());
         envoice.setMedioPago_envoice(dto.getMedioPago_envoice());
         envoice.setTotal_envoice(dto.getTotal_envoice());
-        envoice.setClient(dto.getClient_id() != null ? clientRepository.findById(dto.getClient_id()).orElse(null) : null);
-        envoice.setEmployer(dto.getEmployer_id() != null ? employerRepository.findById(dto.getEmployer_id()).orElse(null) : null);
+        envoice.setDescripcion_envoice(dto.getDescripcion_envoice()); // Asegúrate de mapear correctamente envoice.setClient(dto.getClient_id() != null ? clientRepository.findById(dto.getClient_id()).orElse(null) : null); envoice.setEmployer(dto.getEmployer_id() != null ? employerRepository.findById(dto.getEmployer_id()).orElse(null) : null); return envoice; }
         return envoice;
     }
 }
