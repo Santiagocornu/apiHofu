@@ -27,76 +27,125 @@ public class EnvoiceService {
 
     @Autowired
     private EmployerRepository employerRepository;
+
     public List<EnvoiceDTO> getAllEnvoices() {
-        return envoiceRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return envoiceRepository.findAll().stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al obtener todas las envoices", e);
+        }
     }
 
     public EnvoiceDTO getEnvoiceById(Long id) {
-        Envoice envoice = envoiceRepository.findById(id).orElse(null);
-        return envoice != null ? convertToDTO(envoice) : null;
+        try {
+            Envoice envoice = envoiceRepository.findById(id).orElse(null);
+            return envoice != null ? convertToDTO(envoice) : null;
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al obtener envoice por ID", e);
+        }
     }
 
     public EnvoiceDTO createEnvoice(EnvoiceDTO envoiceDTO) {
-        Envoice envoice = convertToEntity(envoiceDTO);
-        Envoice savedEnvoice = envoiceRepository.save(envoice);
-        return convertToDTO(savedEnvoice);
+        try {
+            Envoice envoice = convertToEntity(envoiceDTO);
+            Envoice savedEnvoice = envoiceRepository.save(envoice);
+            return convertToDTO(savedEnvoice);
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al crear envoice", e);
+        }
     }
 
     public EnvoiceDTO updateEnvoice(Long id, EnvoiceDTO envoiceDTO) {
-        return envoiceRepository.findById(id).map(envoice -> {
-            envoice.setNombre_envoice(envoiceDTO.getNombre_envoice());
-            envoice.setMedioPago_envoice(envoiceDTO.getMedioPago_envoice());
-            envoice.setTotal_envoice(envoiceDTO.getTotal_envoice());
-            envoice.setClient(envoiceDTO.getClient_id() != null ? clientRepository.findById(envoiceDTO.getClient_id()).orElse(null) : null);
-            envoice.setEmployer(envoiceDTO.getEmployer_id() != null ? employerRepository.findById(envoiceDTO.getEmployer_id()).orElse(null) : null);
-            return convertToDTO(envoiceRepository.save(envoice));
-        }).orElse(null);
+        try {
+            return envoiceRepository.findById(id).map(envoice -> {
+                envoice.setNombre_envoice(envoiceDTO.getNombre_envoice());
+                envoice.setMedioPago_envoice(envoiceDTO.getMedioPago_envoice());
+                envoice.setTotal_envoice(envoiceDTO.getTotal_envoice());
+                envoice.setClient(envoiceDTO.getClient_id() != null ? clientRepository.findById(envoiceDTO.getClient_id()).orElse(null) : null);
+                envoice.setEmployer(envoiceDTO.getEmployer_id() != null ? employerRepository.findById(envoiceDTO.getEmployer_id()).orElse(null) : null);
+                return convertToDTO(envoiceRepository.save(envoice));
+            }).orElse(null);
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al actualizar envoice", e);
+        }
     }
 
     public boolean deleteEnvoice(Long id) {
-        return envoiceRepository.findById(id).map(envoice -> {
-            List<EnvoiceProduct> envoiceProducts = envoiceProductRepository.findByEnvoiceId(id);
-            envoiceProductRepository.deleteAll(envoiceProducts);
-            envoiceRepository.delete(envoice);
-            return true;
-        }).orElse(false);
+        try {
+            return envoiceRepository.findById(id).map(envoice -> {
+                List<EnvoiceProduct> envoiceProducts = envoiceProductRepository.findByEnvoiceId(id);
+                envoiceProductRepository.deleteAll(envoiceProducts);
+                envoiceRepository.delete(envoice);
+                return true;
+            }).orElse(false);
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al eliminar envoice", e);
+        }
     }
 
     public List<EnvoiceProductDTO> getProductsByEnvoiceId(Long envoiceId) {
-        return envoiceProductRepository.findByEnvoiceId(envoiceId).stream()
-                .map(envoiceProduct -> {
-                    EnvoiceProductDTO dto = new EnvoiceProductDTO();
-                    dto.setId(envoiceProduct.getId());
-                    dto.setEnvoiceId(envoiceProduct.getEnvoice().getId_envoice());
-                    dto.setProductId(envoiceProduct.getProduct().getId_product());
-                    dto.setQuantity(envoiceProduct.getQuantity());
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        try {
+            return envoiceProductRepository.findByEnvoiceId(envoiceId).stream()
+                    .map(envoiceProduct -> {
+                        EnvoiceProductDTO dto = new EnvoiceProductDTO();
+                        dto.setId(envoiceProduct.getId());
+                        dto.setEnvoiceId(envoiceProduct.getEnvoice().getId_envoice());
+                        dto.setProductId(envoiceProduct.getProduct().getId_product());
+                        dto.setQuantity(envoiceProduct.getQuantity());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al obtener productos de envoice", e);
+        }
     }
 
     public EnvoiceDTO associateClient(Long envoiceId, Long clientId) {
-        return envoiceRepository.findById(envoiceId).map(envoice -> {
-            Client client = clientRepository.findById(clientId).orElse(null);
-            if (client != null) {
-                envoice.setClient(client);
-                return convertToDTO(envoiceRepository.save(envoice));
-            }
-            return null;
-        }).orElse(null);
+        try {
+            return envoiceRepository.findById(envoiceId).map(envoice -> {
+                Client client = clientRepository.findById(clientId).orElse(null);
+                if (client != null) {
+                    envoice.setClient(client);
+                    return convertToDTO(envoiceRepository.save(envoice));
+                }
+                return null;
+            }).orElse(null);
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al asociar cliente a envoice", e);
+        }
     }
 
     public EnvoiceDTO associateEmployer(Long envoiceId, Long employerId) {
-        return envoiceRepository.findById(envoiceId).map(envoice -> {
-            Employer employer = employerRepository.findById(employerId).orElse(null);
-            if (employer != null) {
-                envoice.setEmployer(employer);
-                return convertToDTO(envoiceRepository.save(envoice));
-            }
-            return null;
-        }).orElse(null);
+        try {
+            return envoiceRepository.findById(envoiceId).map(envoice -> {
+                Employer employer = employerRepository.findById(employerId).orElse(null);
+                if (employer != null) {
+                    envoice.setEmployer(employer);
+                    return convertToDTO(envoiceRepository.save(envoice));
+                }
+                return null;
+            }).orElse(null);
+        } catch (Exception e) {
+            // Registro del error
+            e.printStackTrace();
+            throw new RuntimeException("Error al asociar empleador a envoice", e);
+        }
     }
 
     private EnvoiceDTO convertToDTO(Envoice envoice) {
@@ -120,8 +169,8 @@ public class EnvoiceService {
         envoice.setEmployer(dto.getEmployer_id() != null ? employerRepository.findById(dto.getEmployer_id()).orElse(null) : null);
         return envoice;
     }
-
 }
+
 
 
 
