@@ -4,7 +4,9 @@ import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.EnvoiceDTO;
 import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.EnvoiceProductDTO;
 import com.proyectoMama.proyectoMama.services.EnvoiceProductService;
 import com.proyectoMama.proyectoMama.services.EnvoiceService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/envoices")
-@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app", "https://front-hofu-e89pbj60m-santiagocornus-projects.vercel.app"})
 public class EnvoiceController {
 
     @Autowired
@@ -23,9 +25,8 @@ public class EnvoiceController {
     private EnvoiceProductService envoiceProductService;
 
     @GetMapping
-    public ResponseEntity<List<EnvoiceDTO>> getAllEnvoices() {
-        List<EnvoiceDTO> envoices = envoiceService.getAllEnvoices();
-        return new ResponseEntity<>(envoices, HttpStatus.OK);
+    public List<EnvoiceDTO> getAllEnvoices() {
+        return envoiceService.getAllEnvoices();
     }
 
     @GetMapping("/{id}")
@@ -47,11 +48,18 @@ public class EnvoiceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEnvoice(@PathVariable Long id) {
-        if (envoiceService.deleteEnvoice(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
+    public ResponseEntity<String> deleteEnvoice(@PathVariable Long id) {
+        try {
+            envoiceService.deleteEnvoice(id);
+            return ResponseEntity.ok("Envoice eliminada exitosamente.");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Error al eliminar la envoice: esta envoice tiene dependencias en otras tablas.");
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar la envoice: " + e.getMessage());
         }
     }
 
@@ -87,6 +95,7 @@ public class EnvoiceController {
         }
     }
 }
+
 
 
 
