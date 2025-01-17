@@ -35,16 +35,20 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version> <!-- Esta es una versión válida -->
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- Lombok dependency -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -65,37 +69,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<!-- Excluir Lombok del WAR -->
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<!-- Plugin de compilación de Maven -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version><!-- Usa una versión estable -->
-				<configuration>
-					<source>${java.version}</source><!-- Establece la versión fuente a 17 -->
-					<target>${java.version}</target><!-- Establece la versión objetivo a 17 -->
-					<!-- Opcional: Habilitar procesamiento de anotaciones -->
-					<compilerArgs>
-						<arg>-parameters</arg><!-- Retener nombres de parámetros para reflexión -->
-					</compilerArgs>
-				</configuration>
-			</plugin>
-
-			<!-- Plugin WAR de Maven -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId><!-- Asegúrate de que esto esté incluido para empaquetar como WAR -->
-				<!-- Configuración adicional puede ser añadida aquí si es necesario -->
+				<!-- Especifica la versión aquí si es necesario -->
+				<!-- Puedes omitir la versión si ya está definida en el parent -->
+				<!--<version>3.4.0</version>-->
 			</plugin>
 
 		</plugins>
@@ -106,7 +82,3 @@
 	<packaging>war</packaging>
 
 </project>
-
-
-
-
