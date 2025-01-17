@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/envoices")
+@RequestMapping("/api/envoice")
 @CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
 public class EnvoiceController {
 
@@ -28,7 +28,6 @@ public class EnvoiceController {
         try {
             return envoiceService.getAllEnvoices();
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener todas las envoices", e);
         }
@@ -40,7 +39,6 @@ public class EnvoiceController {
             EnvoiceDTO envoiceDTO = envoiceService.getEnvoiceById(id);
             return envoiceDTO != null ? ResponseEntity.ok(envoiceDTO) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener envoice por ID", e);
         }
@@ -52,7 +50,6 @@ public class EnvoiceController {
             EnvoiceDTO createdEnvoice = envoiceService.createEnvoice(envoiceDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEnvoice);
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear envoice", e);
         }
@@ -64,7 +61,6 @@ public class EnvoiceController {
             EnvoiceDTO updatedEnvoice = envoiceService.updateEnvoice(id, envoiceDTO);
             return updatedEnvoice != null ? ResponseEntity.ok(updatedEnvoice) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar envoice", e);
         }
@@ -79,7 +75,6 @@ public class EnvoiceController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar envoice", e);
         }
@@ -91,7 +86,6 @@ public class EnvoiceController {
             EnvoiceDTO updatedEnvoice = envoiceService.associateClient(id, clientId);
             return updatedEnvoice != null ? ResponseEntity.ok(updatedEnvoice) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al asociar cliente a envoice", e);
         }
@@ -103,7 +97,6 @@ public class EnvoiceController {
             EnvoiceDTO updatedEnvoice = envoiceService.associateEmployer(id, employerId);
             return updatedEnvoice != null ? ResponseEntity.ok(updatedEnvoice) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al asociar empleador a envoice", e);
         }
@@ -115,7 +108,6 @@ public class EnvoiceController {
             List<EnvoiceProductDTO> products = envoiceService.getProductsByEnvoiceId(id);
             return products != null && !products.isEmpty() ? ResponseEntity.ok(products) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener productos de envoice", e);
         }
@@ -135,10 +127,10 @@ public class EnvoiceController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
         } catch (Exception e) {
-            // Registro del error
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear envoice con productos", e);
         }
     }
 }
+
 

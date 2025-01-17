@@ -9,8 +9,11 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Entity
+@Table(name = "envoice")  // Asegúrate de que el nombre esté en minúsculas
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Envoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +25,11 @@ public class Envoice {
     @Getter @Setter private String descripcion_envoice;
 
     @OneToMany(mappedBy = "envoice", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Ignorar esta relación para evitar ciclos
+    @JsonIgnore
     @Getter @Setter private Set<EnvoiceProduct> envoiceProducts = new HashSet<>();
 
-    @OneToOne(mappedBy = "envoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
-    @JsonIgnore // Ignorar esta relación para evitar ciclos
+    @OneToOne(mappedBy = "envoice", cascade = CascadeType.ALL, optional = true)
+    @JsonIgnore
     @Getter @Setter private Sale sale;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -35,9 +38,10 @@ public class Envoice {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "employer_id")
-    @JsonIgnore // Ignorar si es necesario
+    @JsonIgnore
     @Getter @Setter private Employer employer;
 }
+
 
 
 

@@ -35,50 +35,34 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version> <!-- Esta es una versión válida -->
+			<version>8.0.33</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Lombok dependency -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.30</version><!-- Actualiza a la última versión -->
+			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 
+
 	<build>
-		<!-- Cambia el nombre final al nombre del proyecto -->
 		<finalName>${project.artifactId}</finalName>
-
 		<plugins>
-
-			<!-- Spring Boot Maven Plugin para empaquetar como WAR -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- Especifica la versión aquí si es necesario -->
-				<!-- Puedes omitir la versión si ya está definida en el parent -->
-				<!--<version>3.4.0</version>-->
 			</plugin>
-
 		</plugins>
-
 	</build>
 
-	<!-- Configuración para aplicación web -->
 	<packaging>war</packaging>
-
 </project>
