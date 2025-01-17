@@ -23,18 +23,15 @@ public class EnvoiceController {
     private EnvoiceProductService envoiceProductService;
 
     @GetMapping
-    public List<EnvoiceDTO> getAllEnvoices() {
-        return envoiceService.getAllEnvoices();
+    public ResponseEntity<List<EnvoiceDTO>> getAllEnvoices() {
+        List<EnvoiceDTO> envoices = envoiceService.getAllEnvoices();
+        return new ResponseEntity<>(envoices, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EnvoiceDTO> getEnvoiceById(@PathVariable Long id) {
         EnvoiceDTO envoiceDTO = envoiceService.getEnvoiceById(id);
-        if (envoiceDTO != null) {
-            return ResponseEntity.ok(envoiceDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return envoiceDTO != null ? ResponseEntity.ok(envoiceDTO) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -46,11 +43,7 @@ public class EnvoiceController {
     @PutMapping("/{id}")
     public ResponseEntity<EnvoiceDTO> updateEnvoice(@PathVariable Long id, @RequestBody EnvoiceDTO envoiceDTO) {
         EnvoiceDTO updatedEnvoice = envoiceService.updateEnvoice(id, envoiceDTO);
-        if (updatedEnvoice != null) {
-            return ResponseEntity.ok(updatedEnvoice);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return updatedEnvoice != null ? ResponseEntity.ok(updatedEnvoice) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
@@ -65,31 +58,19 @@ public class EnvoiceController {
     @PutMapping("/{id}/associateClient")
     public ResponseEntity<EnvoiceDTO> associateClient(@PathVariable Long id, @RequestParam Long clientId) {
         EnvoiceDTO updatedEnvoice = envoiceService.associateClient(id, clientId);
-        if (updatedEnvoice != null) {
-            return ResponseEntity.ok(updatedEnvoice);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return updatedEnvoice != null ? ResponseEntity.ok(updatedEnvoice) : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}/associateEmployer")
     public ResponseEntity<EnvoiceDTO> associateEmployer(@PathVariable Long id, @RequestParam Long employerId) {
         EnvoiceDTO updatedEnvoice = envoiceService.associateEmployer(id, employerId);
-        if (updatedEnvoice != null) {
-            return ResponseEntity.ok(updatedEnvoice);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return updatedEnvoice != null ? ResponseEntity.ok(updatedEnvoice) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}/products")
     public ResponseEntity<List<EnvoiceProductDTO>> getProductsByEnvoiceId(@PathVariable Long id) {
         List<EnvoiceProductDTO> products = envoiceService.getProductsByEnvoiceId(id);
-        if (products != null && !products.isEmpty()) {
-            return ResponseEntity.ok(products);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return products != null && !products.isEmpty() ? ResponseEntity.ok(products) : ResponseEntity.notFound().build();
     }
 
     @PostMapping("/createWithProducts")
@@ -106,5 +87,6 @@ public class EnvoiceController {
         }
     }
 }
+
 
 
