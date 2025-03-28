@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/envoice")
+@RequestMapping("/api/envoices")
 @CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
 public class EnvoiceController {
 
@@ -23,6 +24,51 @@ public class EnvoiceController {
     @Autowired
     private EnvoiceProductService envoiceProductService;
 
+    @PostMapping("/createWithProducts")
+    public ResponseEntity<?> createEnvoiceWithProducts(
+            @RequestBody EnvoiceDTO envoiceDTO,
+            @RequestParam List<Long> productIds,
+            @RequestParam List<Long> quantities) {
+        try {
+            // Validar longitud de listas
+            if (productIds.size() != quantities.size()) {
+                return ResponseEntity.badRequest().body("Product IDs and quantities must match.");
+            }
+
+            // Check employer existence
+            if (!envoiceService.existsEmployerById(envoiceDTO.getEmployer_id())) {
+                return ResponseEntity.badRequest().body("Employer not found.");
+            }
+
+            // Check client existence only if client_id is not null
+            if (envoiceDTO.getClient_id() != null && !envoiceService.existsClientById(envoiceDTO.getClient_id())) {
+                return ResponseEntity.badRequest().body("Client not found.");
+            }
+
+            // Create envoice
+            EnvoiceDTO createdEnvoice = envoiceService.createEnvoice(envoiceDTO);
+            if (createdEnvoice == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create envoice.");
+            }
+
+            // Create associated products
+            for (int i = 0; i < productIds.size(); i++) {
+                EnvoiceProductDTO envoiceProductDTO = new EnvoiceProductDTO();
+                envoiceProductDTO.setEnvoiceId(createdEnvoice.getId_envoice());
+                envoiceProductDTO.setProductId(productIds.get(i));
+                envoiceProductDTO.setQuantity(quantities.get(i));
+                envoiceProductService.createEnvoiceProduct(envoiceProductDTO);
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEnvoice);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+
+    // Obtener todas las envoices
     @GetMapping
     public List<EnvoiceDTO> getAllEnvoices() {
         try {
@@ -33,6 +79,7 @@ public class EnvoiceController {
         }
     }
 
+    // Obtener una envoice por ID
     @GetMapping("/{id}")
     public ResponseEntity<EnvoiceDTO> getEnvoiceById(@PathVariable Long id) {
         try {
@@ -44,17 +91,7 @@ public class EnvoiceController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<EnvoiceDTO> createEnvoice(@RequestBody EnvoiceDTO envoiceDTO) {
-        try {
-            EnvoiceDTO createdEnvoice = envoiceService.createEnvoice(envoiceDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdEnvoice);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear envoice", e);
-        }
-    }
-
+    // Actualizar una envoice existente
     @PutMapping("/{id}")
     public ResponseEntity<EnvoiceDTO> updateEnvoice(@PathVariable Long id, @RequestBody EnvoiceDTO envoiceDTO) {
         try {
@@ -66,9 +103,18 @@ public class EnvoiceController {
         }
     }
 
+    // Eliminar una envoice por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEnvoice(@PathVariable Long id) {
         try {
+            List<EnvoiceProductDTO> envoiceProducts = envoiceProductService.getAllEnvoiceProducts().stream()
+                    .filter(ep -> ep.getEnvoiceId().equals(id))
+                    .collect(Collectors.toList());
+
+            for (EnvoiceProductDTO envoiceProduct : envoiceProducts) {
+                envoiceProductService.deleteEnvoiceProduct(envoiceProduct.getId());
+            }
+
             if (envoiceService.deleteEnvoice(id)) {
                 return ResponseEntity.noContent().build();
             } else {
@@ -80,6 +126,7 @@ public class EnvoiceController {
         }
     }
 
+    // Asociar un cliente a una envoice
     @PutMapping("/{id}/associateClient")
     public ResponseEntity<EnvoiceDTO> associateClient(@PathVariable Long id, @RequestParam Long clientId) {
         try {
@@ -91,6 +138,7 @@ public class EnvoiceController {
         }
     }
 
+    // Asociar un empleador a una envoice
     @PutMapping("/{id}/associateEmployer")
     public ResponseEntity<EnvoiceDTO> associateEmployer(@PathVariable Long id, @RequestParam Long employerId) {
         try {
@@ -101,36 +149,4 @@ public class EnvoiceController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al asociar empleador a envoice", e);
         }
     }
-
-    @GetMapping("/{id}/products")
-    public ResponseEntity<List<EnvoiceProductDTO>> getProductsByEnvoiceId(@PathVariable Long id) {
-        try {
-            List<EnvoiceProductDTO> products = envoiceService.getProductsByEnvoiceId(id);
-            return products != null && !products.isEmpty() ? ResponseEntity.ok(products) : ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener productos de envoice", e);
-        }
-    }
-
-    @PostMapping("/createWithProducts")
-    public ResponseEntity<EnvoiceDTO> createEnvoiceWithProducts(@RequestBody EnvoiceDTO envoiceDTO) {
-        try {
-            EnvoiceDTO createdEnvoice = envoiceService.createEnvoice(envoiceDTO);
-            if (createdEnvoice != null) {
-                envoiceDTO.getProducts().forEach(envoiceProductDTO -> {
-                    envoiceProductDTO.setEnvoiceId(createdEnvoice.getId_envoice());
-                    envoiceProductService.createEnvoiceProduct(envoiceProductDTO);
-                });
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdEnvoice);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear envoice con productos", e);
-        }
-    }
 }
-
-

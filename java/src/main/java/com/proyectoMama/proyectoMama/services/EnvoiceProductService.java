@@ -39,47 +39,72 @@ public class EnvoiceProductService {
     }
 
     public EnvoiceProductDTO createEnvoiceProduct(EnvoiceProductDTO dto) {
-        EnvoiceProduct envoiceProduct = convertToEntity(dto);
-        envoiceProduct = envoiceProductRepository.save(envoiceProduct);
-        return convertToDTO(envoiceProduct);
+        try {
+            EnvoiceProduct envoiceProduct = convertToEntity(dto);
+            envoiceProduct = envoiceProductRepository.save(envoiceProduct);
+            return convertToDTO(envoiceProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al crear el producto de la envoice", e);
+        }
     }
 
     public EnvoiceProductDTO updateEnvoiceProduct(Long id, EnvoiceProductDTO dto) {
-        return envoiceProductRepository.findById(id).map(envoiceProduct -> {
-            envoiceProduct.setEnvoice(envoiceRepository.findById(dto.getEnvoiceId()).orElse(null));
-            envoiceProduct.setProduct(productRepository.findById(dto.getProductId()).orElse(null));
-            envoiceProduct.setQuantity(dto.getQuantity());
-            return convertToDTO(envoiceProductRepository.save(envoiceProduct));
-        }).orElse(null);
+        try {
+            return envoiceProductRepository.findById(id).map(envoiceProduct -> {
+                envoiceProduct.setEnvoice(envoiceRepository.findById(dto.getId()).orElse(null));
+                envoiceProduct.setProduct(productRepository.findById(dto.getId()).orElse(null));
+                envoiceProduct.setQuantity(dto.getQuantity());
+                return convertToDTO(envoiceProductRepository.save(envoiceProduct));
+            }).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al actualizar el producto de la envoice", e);
+        }
     }
 
     public boolean deleteEnvoiceProduct(Long id) {
-        return envoiceProductRepository.findById(id).map(envoiceProduct -> {
-            envoiceProductRepository.delete(envoiceProduct);
-            return true;
-        }).orElse(false);
+        try {
+            return envoiceProductRepository.findById(id).map(envoiceProduct -> {
+                envoiceProductRepository.delete(envoiceProduct);
+                return true;
+            }).orElse(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al eliminar el producto de la envoice", e);
+        }
     }
 
     public EnvoiceProductDTO associateEnvoice(Long envoiceProductId, Long envoiceId) {
-        return envoiceProductRepository.findById(envoiceProductId).map(envoiceProduct -> {
-            Envoice envoice = envoiceRepository.findById(envoiceId).orElse(null);
-            if (envoice != null) {
-                envoiceProduct.setEnvoice(envoice);
-                return convertToDTO(envoiceProductRepository.save(envoiceProduct));
-            }
-            return null;
-        }).orElse(null);
+        try {
+            return envoiceProductRepository.findById(envoiceProductId).map(envoiceProduct -> {
+                Envoice envoice = envoiceRepository.findById(envoiceId).orElse(null);
+                if (envoice != null) {
+                    envoiceProduct.setEnvoice(envoice);
+                    return convertToDTO(envoiceProductRepository.save(envoiceProduct));
+                }
+                return null;
+            }).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al asociar la envoice al producto", e);
+        }
     }
 
     public EnvoiceProductDTO associateProduct(Long envoiceProductId, Long productId) {
-        return envoiceProductRepository.findById(envoiceProductId).map(envoiceProduct -> {
-            Product product = productRepository.findById(productId).orElse(null);
-            if (product != null) {
-                envoiceProduct.setProduct(product);
-                return convertToDTO(envoiceProductRepository.save(envoiceProduct));
-            }
-            return null;
-        }).orElse(null);
+        try {
+            return envoiceProductRepository.findById(envoiceProductId).map(envoiceProduct -> {
+                Product product = productRepository.findById(productId).orElse(null);
+                if (product != null) {
+                    envoiceProduct.setProduct(product);
+                    return convertToDTO(envoiceProductRepository.save(envoiceProduct));
+                }
+                return null;
+            }).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al asociar el producto a la envoice", e);
+        }
     }
 
     private EnvoiceProductDTO convertToDTO(EnvoiceProduct envoiceProduct) {
@@ -100,6 +125,7 @@ public class EnvoiceProductService {
         return envoiceProduct;
     }
 }
+
 
 
 

@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/envoiceProducts")
 @CrossOrigin(origins = {"http://localhost:3000", "https://front-hofu.vercel.app"})
-
 public class EnvoiceProductController {
 
     @Autowired
@@ -45,8 +46,6 @@ public class EnvoiceProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
 
     @PutMapping("/{id}")
     public ResponseEntity<EnvoiceProductDTO> updateEnvoiceProduct(@PathVariable Long id, @RequestBody EnvoiceProductDTO dto) {
@@ -87,7 +86,19 @@ public class EnvoiceProductController {
         }
     }
 
-
+    @GetMapping("/envoice/{envoiceId}")
+    public ResponseEntity<List<EnvoiceProductDTO>> getEnvoiceProductsByEnvoiceId(@PathVariable Long envoiceId) {
+        try {
+            List<EnvoiceProductDTO> envoiceProducts = envoiceProductService.getAllEnvoiceProducts().stream()
+                    .filter(ep -> ep.getEnvoiceId().equals(envoiceId))
+                    .collect(Collectors.toList());
+            return envoiceProducts.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(envoiceProducts);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener productos de la envoice", e);
+        }
+    }
 }
+
 
 

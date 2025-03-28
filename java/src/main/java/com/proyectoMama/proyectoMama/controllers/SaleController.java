@@ -56,6 +56,7 @@ public class SaleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSale(@PathVariable Long id) {
         saleService.deleteSale(id);
+        System.out.println("Sale with id " + id + " has been deleted");
         return ResponseEntity.noContent().build();
     }
 
@@ -88,9 +89,3 @@ public class SaleController {
         return sale;
     }
 }
-
-
-
-
-
-

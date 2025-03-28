@@ -4,6 +4,7 @@ import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.Envoice;
 import com.proyectoMama.proyectoMama.entities.EnvoiceProduct.Sale;
 import com.proyectoMama.proyectoMama.repositories.EnvoiceRepository;
 import com.proyectoMama.proyectoMama.repositories.SaleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class SaleService {
 
     @Autowired
@@ -44,6 +46,8 @@ public class SaleService {
     public void deleteSale(Long id) {
         Sale sale = saleRepository.findById(id).orElseThrow(() -> new RuntimeException("Sale not found for this id :: " + id));
         saleRepository.delete(sale);
+        saleRepository.flush();
+        System.out.println("Sale with id " + id + " has been deleted");
     }
 
     public Sale associateEnvoice(Long saleId, Long envoiceId) {
@@ -54,8 +58,3 @@ public class SaleService {
         return saleRepository.save(sale);
     }
 }
-
-
-
-
-

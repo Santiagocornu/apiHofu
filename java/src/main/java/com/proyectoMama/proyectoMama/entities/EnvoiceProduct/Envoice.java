@@ -21,6 +21,7 @@ public class Envoice {
 
     @Getter @Setter private String nombre_envoice;
     @Getter @Setter private String medioPago_envoice;
+
     @Getter @Setter private Double total_envoice;
     @Getter @Setter private String descripcion_envoice;
 
@@ -33,13 +34,14 @@ public class Envoice {
     @Getter @Setter private Sale sale;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", nullable = true)
     @Getter @Setter private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "employer_id")
+    @JoinColumn(name = "employer_id", nullable = true) // Permitir nulos
     @JsonIgnore
     @Getter @Setter private Employer employer;
+
 }
 
 
